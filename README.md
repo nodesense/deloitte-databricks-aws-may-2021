@@ -20,3 +20,15 @@ create table orders(order_no int,amount int,cust_id int,country text);
 
 
 ```
+
+
+
+```
+insert into products values (1, 'iphone', 50000, 100);
+insert into brands values(100, 'Apple');
+
+select * from products;
+
+select * from brands;
+
+```
