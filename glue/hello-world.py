@@ -56,14 +56,6 @@ def map_function(dynamicRecord):
     
 adjAmount = Map.apply(frame = filterAmount, f = map_function, transformation_ctx = "adjAmount")
 
-# to dataFrame
-df1 = adjAmount.toDF()
-df1.printSchema()
-df1.show()
-
-print("part", df1.rdd.getNumPartitions())
-
- 
 ## @type: DataSink
 ## @args: [connection_type = "s3", connection_options = {"path": "s3://gksworkshop/orders-json"}, format = "json", transformation_ctx = "datasink2"]
 ## @return: datasink2
@@ -76,6 +68,41 @@ datasink2 = glueContext.write_dynamic_frame.from_options(frame = adjAmount, conn
 ## @inputs: [frame = adjAmount]
 datasink_s3_parquet = glueContext.write_dynamic_frame.from_options(frame = adjAmount, connection_type = "s3", connection_options = {"path":"s3://gksworkshop/orders-parquet"}, format = "parquet",  transformation_ctx = "datasink_s3_parquet")
 
+
+
+# to dataFrame
+df1 = adjAmount.toDF()
+df1.printSchema()
+df1.show()
+
+print("part", df1.rdd.getNumPartitions())
+
+
+# convert Data Frame to Dynamic Frame
+
+dynamicFrame1 = DynamicFrame.fromDF(df1, glueContext, "dynamicFrame1")
+datasink3 = glueContext.write_dynamic_frame.from_options(frame = dynamicFrame1, connection_type = "s3", connection_options = {"path": "s3://gksworkshop/from-df-dyf"}, format = "json", transformation_ctx = "datasink3")
+
+ 
+products = [ 
+          # (product_id, product_name, brand_id)  
+         (1, 'iPhone', 100),
+         (2, 'Galaxy', 200),
+         (3, 'Redme', 300), # orphan record, no matching brand
+         (4, 'Pixel', 400),
+]
+
+productDf = spark.createDataFrame(data=products, 
+                                    schema=["product_id", "name", "brand_id"])
+
+productDf.printSchema() 
+productDf.show() # top 20 records
+
+
+dynamicFrame2 = DynamicFrame.fromDF(productDf, glueContext, "dynamicFrame2")
+datasink4 = glueContext.write_dynamic_frame.from_options(frame = dynamicFrame2, connection_type = "s3", connection_options = {"path": "s3://gksworkshop/from-dyf-products"}, format = "xml", transformation_ctx = "datasink4")
+
+# write to s3 via DynamicFrame APIS
 
 
 #print("My Glue Job Done via print")
