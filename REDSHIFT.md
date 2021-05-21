@@ -24,3 +24,14 @@ select count(*) from sales; -- public
 
 
 https://docs.aws.amazon.com/redshift/latest/dg/c-getting-started-using-spectrum-create-role.html
+
+
+```
+-- external schema shall be created as database in glue catalog
+create external schema gk_rs_external
+from data catalog
+database 'dev'
+iam_role 'arn:aws:iam::879957431711:role/TRAINING_REDSHIFT_ROLE'
+region 'us-east-2';
+
+```
