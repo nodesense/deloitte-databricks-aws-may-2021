@@ -21,3 +21,6 @@ SELECT * from gk.invoices;
 
 select count(*) from sales; -- public 
 ```
+
+
+https://docs.aws.amazon.com/redshift/latest/dg/c-getting-started-using-spectrum-create-role.html
